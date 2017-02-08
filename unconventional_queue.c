@@ -73,13 +73,25 @@ void deletion(int choice)
 	{
 		del_item=lq.a[lq.rear];
 		lq.rear--;
-		printf("Deleted item: %d",del_item);
+		if(lq.rear==-1)
+		lq.front=-1;
+		printf("Deleted item: %d\n",del_item);
+		
 	}
 	else
 	{
-		del_item=lq.a[lq.front];
-		lq.front++;
-		printf("Deleted item: %d",del_item);
+		if(lq.front<lq.rear)
+		{
+			del_item=lq.a[lq.front];
+			lq.front++;
+			printf("Deleted item: %d\n",del_item);
+		}
+		else
+		{
+			printf("%d\n",lq.a[lq.front]);
+			lq.front=-1;
+			lq.rear=-1;
+		}
 	}
 }
 void display(choice)
@@ -102,7 +114,7 @@ void display(choice)
 				case 2:
 					temp=lq.front;
 					while(temp!=lq.rear)
-					printf("%d\n",lq.a[temp]);
+					printf("%d\n",lq.a[temp++]);
 					printf("%d\n",lq.a[temp]);
 					break;
 		}
@@ -113,7 +125,7 @@ int main()
 	int choice,action;
 	lq.front=-1;
 	lq.rear=-1;
-	printf("Which method?\n1. Front end insertion\n2. Conventional:\n ");
+	printf("Which method?\n1. Front end insertion\n2. Conventional\n ");
 	scanf("%d",&choice);
 	do
 	{
