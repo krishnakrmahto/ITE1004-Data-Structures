@@ -44,6 +44,7 @@ int full2()
 }
 void url()
 {
+	int i,tempo=st.top2;
 	char adrs[30],*temp;
 	puts("\nEnter url: ");
 	scanf("%s",adrs);
@@ -51,6 +52,8 @@ void url()
 	strcpy(temp,adrs);
 	st.urls[++st.top1]=temp;
 	printf("You're in %s\n",st.urls[st.top1]);
+	for(i=tempo;i<=19;i++)
+	st.top2++;//on entering a new url, the forward stack should become empty because on pressing back, we can't get the initial urls which that were present in forwrd stack before the new url was inserted.
 }
 void back()
 {
