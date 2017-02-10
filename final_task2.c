@@ -30,18 +30,15 @@ int full2()
 	return 1;
 	return 0;
 }
-void url()//i is the index of the *url array of ptrs which will be passed by the calling fn.
+void url()
 {
-	//int len;
 	char adrs[30],*temp;
 	puts("\nEnter url: ");
 	scanf("%s",adrs);
-	//len=strlen(adrs);
 	temp=(char*)malloc(strlen(adrs)+1);
 	strcpy(temp,adrs);
 	st.urls[++st.top1]=temp;
 	printf("You're in %s\n",st.urls[st.top1]);
-	//printf("%s",st.urls[0]);
 }
 void back()
 {
@@ -101,12 +98,11 @@ int main()
 					back();
 					break;
 					case 2:
-					//	puts("hatt");
 						url();
 						break;
 			}
 		}
-			else if(empty1()==1)//&& empty2()==1)
+			else if(empty1()==1)
 			{
 				puts("First visit! URL plz!");
 				url();
@@ -116,7 +112,7 @@ int main()
 				puts("URL of the second page plz!");
 				url();
 			}
-			else //(empty1()==0 && empty2()==0 && st.top!=0)more condtions
+			else
 			{
 				puts("1. Backward\n2. Forward\n3. Enter URL");
 				scanf("%d",&choice);
@@ -126,7 +122,6 @@ int main()
 					back();
 					break;
 					case 2:
-					//	puts("hatt");
 						forward();
 						break;
 						case 3:
@@ -136,6 +131,5 @@ int main()
 			}
 			puts("Continue? Y or N");
 			proceed=getche();
-			//puts();
 		}while(proceed=='Y' || proceed=='y');
 	}
