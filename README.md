@@ -1,2 +1,3 @@
 # Data-Structures
-Queue- Allowing to choose the user which end they want to give inputs at, while keeping the FIFO and use of rear and front intact.
+This repo has the tasks assigned in the ITE1004, VIT, Vellore.
+Teacher- E. Vijayan
