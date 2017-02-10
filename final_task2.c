@@ -6,6 +6,18 @@ struct stack
 	char *urls[20];
 	int top1,top2;
 }st;
+void disp_forward()
+{
+	int i;
+	for(i=st.top2;i<=19;i++)
+	printf("%s\n",st.urls[i]);
+}
+void disp_back()
+{
+	int i;
+	for(i=st.top1;i>=0;i--)
+	printf("%s\n",st.urls[i]);
+}
 int empty1()
 {
 	if(st.top1==-1)
@@ -70,7 +82,7 @@ int main()
 		puts("\nEnter your choice: ");
 		if(st.top1==0 && empty2()==0)
 		{
-			puts("1. Forward\n2. Enter URL");
+			puts("1. Forward\n2. Enter URL\n3. Contents of Back stack\n4. Content of Forward stack");//Back stack is where webpages which are obtained upon selecting 'Back'. Front stack is where webpages which are obtained upon selecting 'Front'.
 			scanf("%d",&choice);
 			switch(choice)
 			{
@@ -80,17 +92,31 @@ int main()
 					case 2:
 						url();
 						break;
+						case 3:
+							disp_back();
+							break;
+							case 4:
+								disp_forward();
+								break;
 			}
 		}
 		else if(empty2()==1 && full1()==1)
 		{
-			puts("Backward? Y or N");
-			if(getche()=='Y')
-			back();
+			puts("1. Backward\n2. Contents of Back stack");
+			scanf("%d",&choice);
+			switch(choice)
+			{
+				case 1:
+					back();
+					break;
+					case 2:
+						disp_back();
+						break;
+			}
 		}
 		else if(empty2()==1 && empty1()==0 && st.top1!=0)
 		{
-			puts("1. Backward\n2. Enter URL");
+			puts("1. Backward\n2. Enter URL\n3. Contents of Back stack");
 			scanf("%d",&choice);
 			switch(choice)
 			{
@@ -100,21 +126,34 @@ int main()
 					case 2:
 						url();
 						break;
+						case 3:
+							disp_back();
+							break;
 			}
 		}
 			else if(empty1()==1)
 			{
-				puts("First visit! URL plz!");
+				puts("First visit! URL plz!");//after first visit, there will always be atleast one url in top1 stack as in this case neither forward,nor back possible.
 				url();
 			}
 			else if(st.top1==0 && empty2()==1)
 			{
-				puts("URL of the second page plz!");
-				url();
+				puts("1. Enter second page\n2. Contents of Back stack");
+				scanf("%d",&choice);
+				switch(choice)
+				{
+					case 1:
+						url();
+						break;
+						case 2:
+							disp_back();
+							break;
+				}
+
 			}
 			else
 			{
-				puts("1. Backward\n2. Forward\n3. Enter URL");
+				puts("1. Backward\n2. Forward\n3. Enter URL\n4. Contents of Back stack\n5. Contents of Forward stack");
 				scanf("%d",&choice);
 				switch(choice)
 				{
