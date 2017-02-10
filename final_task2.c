@@ -169,9 +169,16 @@ int main()
 						case 3:
 							url();
 							break;
+							case 4:
+								disp_back();
+								break;
+								case 5:
+									disp_forward();
+									break;
 				}
 			}
 			puts("Continue? Y or N");
 			proceed=getche();
 		}while(proceed=='Y' || proceed=='y');
 	}
+
