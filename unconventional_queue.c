@@ -29,11 +29,11 @@ void insert(int choice)
 		scanf("%d",&item);
 		switch(choice)
 		{
-			case 1:
+			case 1://if it is the first choice then front should be used to add the elements and rear to delete
 				if(lq_empty()==1)
 				{
-					lq.a[++lq.rear]=item;
-					lq.front++;
+					lq.a[++lq.front]=item;
+					lq.rear++;
 				}
 				else
 				{
