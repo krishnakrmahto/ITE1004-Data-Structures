@@ -19,7 +19,7 @@ void insert(int choice)
 {
 	if(lq_full()==1)
 	{
-		puts("Queue full!\n");
+		puts("Queue full!");
 		return;
 	}
 	else
