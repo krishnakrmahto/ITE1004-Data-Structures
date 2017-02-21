@@ -32,8 +32,8 @@ void insert(int choice)
 			case 1:
 				if(lq_empty()==1)
 				{
-					lq.a[++lq.front]=item;
-					lq.rear++;
+					lq.a[++lq.rear]=item;
+					lq.front++;
 				}
 				else
 				{
