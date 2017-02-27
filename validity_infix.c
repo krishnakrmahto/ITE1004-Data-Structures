@@ -22,8 +22,8 @@ int main()
 	st.top=-1;
 	int temp=0;
 	char infix[SIZE2],*term;
-//do
-//{
+do
+{
 	puts("\nEnter the infix that you want to check: ");
 	scanf("%s",infix);
 	term=infix;
@@ -85,7 +85,8 @@ int main()
 	puts("valid infix.");
 	else
 	puts("invalid infix.");
-	puts("more infixes? Y or N");
-//}while((getche()=='y')||(getche()=='Y'));
+	temp=0;
+puts("more infixes? Y or N");
+}while((getche()=='y')||(getche()=='Y'));
 	return 0;
 }
