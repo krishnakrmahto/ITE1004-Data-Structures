@@ -51,7 +51,7 @@ int priority(char x)
 }
 int main()
 {
-	char *term,infix[SIZE+10],postfix[SIZE+10],op[SIZE],*op1,*op2,caten[SIZE];//infix stores the terms in infix notation, postfix stores the terms in postfix notation.//term holds the adress of
+	char *term,*op_ptr,infix[SIZE+10],postfix[SIZE+10],*op,*op1,*op2,caten[SIZE];//infix stores the terms in infix notation, postfix stores the terms in postfix notation.//term holds the adress of
 	//each term in the exp
 	st1.top1=-1;
 	st2.top2=-1;
@@ -95,9 +95,13 @@ int main()
 
 	//term=postfix;//now term will be used to iterate through the postfix exp for prefix conversion
 	int opind=0;//index for op1 and op2 strings and op
+	//doing this because when declared op will have some garbage characters. Setting its first char as NULL...
+	//... (ie, terminating the string op) means op string has only one char which is NULL, no other garbage values.
 	//#define FIRST
 	for(term=postfix;*term!='\0';term++)
 	{
+		op=(char*)malloc(SIZE+1);
+		//strcpy(op_ptr,op);
 		if(isalnum(*term))
 		push(term);
 		else
@@ -106,6 +110,8 @@ int main()
 			{
 				case '+':
 					op[opind++]='+';
+					op[opind++]='\0';//doing this because rest of the indices of op will have some garbage characters.terminating the string op...
+					//means op string has ended, no other garbage values.
 					op1=pop();
 					op2=pop();
 				/*	#ifdef FIRST
@@ -128,7 +134,7 @@ int main()
 					strcat(op,caten);
 					push(op);
 					//push(op);//passing the address of op..read the comment on the line that follows second after this line...
-					//opind=0;
+					opind=0;
 					//sprintf(op,"%c",'\0');//...now that i am overwriting the value at op with null, i will be left with EMPTINESS at st.terms1[0]
 				//	free(op);
 					/*for(opind=1;opind<=2;opind++)
@@ -138,6 +144,7 @@ int main()
 					break;
 					case '-':
 						op[opind++]='-';
+						op[opind++]='\0';
 						op1=pop();
 						op2=pop();
 						if(isalnum(*op2))
@@ -152,12 +159,13 @@ int main()
 						strcat(op,caten);
 						push(&op[opind]);
 						//push(op);
-						//opind=0;
+						opind=0;
 						//sprintf(op,"%c",'\0');
 					//	free(op);
 						break;
 						case '*':
 							op[opind++]='*';
+							op[opind++]='\0';
 							op1=pop();
 							op2=pop();
 							if(isalnum(*op2))
@@ -170,14 +178,12 @@ int main()
 							else
 							sprintf(caten,"%s",op1);
 							strcat(op,caten);
-							push(&op[opind]);
-							//push(op);
-							//opind=0;
-							//sprintf(op,"%c",'\0');
-							//free(op);
+							push(op);
+							opind=0;
 							break;
 							case '/':
 								op[opind++]='/';
+								op[opind++]='\0';
 								op1=pop();
 								op2=pop();
 								if(isalnum(*op2))
@@ -190,19 +196,18 @@ int main()
 								else
 								sprintf(caten,"%s",op1);
 								strcat(op,caten);
-								push(&op[opind]);
-								//push(op);
-								//opind=0;
-								//sprintf(op,"%c",'\0');
-							//	free(op);
+								push(op);
+								opind=0;
 								break;
 			}
 		}
 	}
 while(st1.top1!=-1)
 {
-    char *prefix=pop();
+    char *prefix;
+    prefix=pop();
     printf("\nThe prefix is: %s",prefix);
 }
 return 0;
 }
+
