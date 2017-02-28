@@ -1,3 +1,4 @@
+#include<stdlib.h>
 #include<stdio.h>
 #include<conio.h>
 #include<string.h>
@@ -93,7 +94,7 @@ int main()
 
 /*-------------------------------------------------------*prefix conversion starts-----------------------------------------*/
 
-	//term=postfix;//now term will be used to iterate through the postfix exp for prefix conversion
+	//now term will be used to iterate through the postfix exp for prefix conversion
 	int opind=0;//index for op1 and op2 strings and op
 	//doing this because when declared op will have some garbage characters. Setting its first char as NULL...
 	//... (ie, terminating the string op) means op string has only one char which is NULL, no other garbage values.
@@ -157,8 +158,8 @@ int main()
 						else
 						sprintf(caten,"%s",op1);
 						strcat(op,caten);
-						push(&op[opind]);
-						//push(op);
+						//push(&op[opind]);
+						push(op);
 						opind=0;
 						//sprintf(op,"%c",'\0');
 					//	free(op);
@@ -210,4 +211,3 @@ while(st1.top1!=-1)
 }
 return 0;
 }
-
