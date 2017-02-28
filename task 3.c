@@ -79,7 +79,7 @@ int main()
 		push(term);
 		else
 		{
-			while((st1.top1!=-1 && priority((*term)<priority(*st1.terms1[st1.top1]))))
+			while((st1.top1!=-1 && priority(*term)<priority(*st1.terms1[st1.top1])))
 			postfix[j++]=*pop();
 			push(term);
 		}
