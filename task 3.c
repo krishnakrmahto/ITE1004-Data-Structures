@@ -14,17 +14,14 @@ struct stack2//stack for evaluation
 	int terms2[SIZE+10];
 	int top2;
 }st2;
-#ifdef EVAL
-void push(char item)
+void push_e(char item)//push to be used during eval
 {
 	st2.terms2[++st2.top2]=item-48;
 }
-char pop()
+char pop_e()//pop to be used during evaluation
 {
 	return(st2.terms2[st2.top2--+48]);
 }
-#endif
-#ifndef EVAL
 void push(char *item)
 {
 	st1.terms1[++st1.top1]=item;
@@ -33,7 +30,6 @@ char *pop()
 {
 	return(st1.terms1[st1.top1--]);
 }
-#endif
 int priority(char x)
 {
 	switch(x)
@@ -48,6 +44,37 @@ int priority(char x)
 						return 3;
 
 	}
+}
+void eval(char *postfix)
+{
+	char *term;
+	char op1,op2;
+	for(term=postfix;*term!='\0';term++)
+	{
+		if(isdigit(*term))
+		push_e(*term);
+		else
+		{
+			op1=pop_e();
+			op2=pop_e();
+			switch(*term)
+			{
+				case '/':
+					push_e(op2/op1);
+					break;
+					case '*':
+						push_e(op2*op1);
+						break;
+						case '+':
+							push_e(op2+op1);
+							break;
+							case '-':
+								push_e(op2-op1);
+								break;
+			}
+		}
+	}
+	printf("The evaluation is: %d",pop_e());
 }
 int main()
 {
@@ -88,7 +115,7 @@ int main()
 	while(st1.top1!=-1)
 	postfix[j++]=*pop();
 	postfix[j]='\0';
-	printf("The postfix of the given prefix is: %s",postfix);
+	printf("\nThe postfix of the given prefix is: %s",postfix);
 /*-------------------------------------------------------*postfix conversion ends------------------------------------------*/
 
 /*-------------------------------------------------------*prefix conversion starts-----------------------------------------*/
@@ -187,5 +214,6 @@ while(st1.top1!=-1)
     prefix=pop();
     printf("\nThe prefix is: %s",prefix);
 }
+eval(postfix);
 return 0;
 }
