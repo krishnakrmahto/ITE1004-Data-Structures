@@ -18,9 +18,9 @@ void push_e(char item)//push to be used during eval
 {
 	st2.terms2[++st2.top2]=item-48;
 }
-char pop_e()//pop to be used during evaluation
+int pop_e()//pop to be used during evaluation
 {
-	return(st2.terms2[st2.top2--+48]);
+	return(st2.terms2[st2.top2--]);
 }
 void push(char *item)
 {
@@ -48,7 +48,7 @@ int priority(char x)
 void eval(char *postfix)
 {
 	char *term;
-	char op1,op2;
+	int op1,op2;
 	for(term=postfix;*term!='\0';term++)
 	{
 		if(isdigit(*term))
@@ -60,21 +60,21 @@ void eval(char *postfix)
 			switch(*term)
 			{
 				case '/':
-					push_e(op2/op1);
+					push_e((op2/op1)+48);
 					break;
 					case '*':
-						push_e(op2*op1);
+						push_e((op2*op1)+48);
 						break;
 						case '+':
-							push_e(op2+op1);
+							push_e(op2+op1+48);
 							break;
 							case '-':
-								push_e(op2-op1);
+								push_e(op2-op1+48);
 								break;
 			}
 		}
 	}
-	printf("The evaluation is: %d",pop_e());
+	printf("\nThe evaluation is: %d",pop_e());
 }
 int main()
 {
@@ -217,3 +217,4 @@ while(st1.top1!=-1)
 eval(postfix);
 return 0;
 }
+
