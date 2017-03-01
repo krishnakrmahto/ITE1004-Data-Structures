@@ -14,27 +14,26 @@ struct stack2//stack for evaluation
 	int terms2[SIZE+10];
 	int top2;
 }st2;
-void push(char *item)
-{
-	#ifndef EVAL
-	st1.terms1[++st1.top1]=item;
-	#else
-	st2.terms2[++st2.top2]=*item-48;
-	#endif
-}
 #ifdef EVAL
+void push(char item)
+{
+	st2.terms2[++st2.top2]=item-48;
+}
 char pop()
+{
+	return(st2.terms2[st2.top2--+48]);
+}
 #endif
 #ifndef EVAL
-char* pop()
-#endif
+void push(char *item)
 {
-	#ifndef EVAL
-	return(st1.terms1[st1.top1--]);//while post to prefix, a string might be there in the stack, so returning the pointer to the string/char
-	#else
-	return(st2.terms2[st2.top2--+48]);
-	#endif
+	st1.terms1[++st1.top1]=item;
 }
+char *pop()
+{
+	return(st1.terms1[st1.top1--]);
+}
+#endif
 int priority(char x)
 {
 	switch(x)
@@ -95,10 +94,7 @@ int main()
 /*-------------------------------------------------------*prefix conversion starts-----------------------------------------*/
 
 	//now term will be used to iterate through the postfix exp for prefix conversion
-	int opind=0;//index for op1 and op2 strings and op
-	//doing this because when declared op will have some garbage characters. Setting its first char as NULL...
-	//... (ie, terminating the string op) means op string has only one char which is NULL, no other garbage values.
-	//#define FIRST
+	int opind=0;
 	for(term=postfix;*term!='\0';term++)
 	{
 		op=(char*)malloc(SIZE+1);
@@ -115,14 +111,6 @@ int main()
 					//means op string has ended, no other garbage values.
 					op1=pop();
 					op2=pop();
-				/*	#ifdef FIRST
-					sprintf(caten,"%c",*op2)
-					strcat(op,caten);
-					sprintf(caten,"%c",*op1);
-					strcat(op,caten);
-					push(op);
-					#endif
-					#undef FIRST*/
 					if(isalnum(*op2))
 					sprintf(caten,"%c",*op2);
 					else
@@ -134,14 +122,7 @@ int main()
 					sprintf(caten,"%s",op1);
 					strcat(op,caten);
 					push(op);
-					//push(op);//passing the address of op..read the comment on the line that follows second after this line...
 					opind=0;
-					//sprintf(op,"%c",'\0');//...now that i am overwriting the value at op with null, i will be left with EMPTINESS at st.terms1[0]
-				//	free(op);
-					/*for(opind=1;opind<=2;opind++)
-					op[opind]=*pop();
-					push(op);
-					opind=0;*/
 					break;
 					case '-':
 						op[opind++]='-';
@@ -158,11 +139,8 @@ int main()
 						else
 						sprintf(caten,"%s",op1);
 						strcat(op,caten);
-						//push(&op[opind]);
 						push(op);
 						opind=0;
-						//sprintf(op,"%c",'\0');
-					//	free(op);
 						break;
 						case '*':
 							op[opind++]='*';
