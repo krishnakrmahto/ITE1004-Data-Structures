@@ -1,3 +1,4 @@
+#include<conio.h>
 #include<stdio.h>
 struct queue
 {
@@ -63,7 +64,7 @@ int take_customers(int total)
 		tot_child+=children;
 		tot_adult+=adult;
 		if((tot_child+tot_adult+total)>20)
-            return(tot_child+tot_adult+1);
+            return(tot_child+tot_adult+total);
 		puts("VIPs? Y or N");
 		if(getche()=='Y' || getche()=='y')
 		vip_insertion(tot_child,tot_adult);
@@ -88,11 +89,11 @@ int main()
 	{
 		do
 		{
-			return_value=take_customers();
-			if(return_value==tot_child+tot_adult+total+1)
+			return_value=take_customers(total);
+			if(return_value>20)
 			{
-				printf("%d people added to the next queue.",(total+tot_adult+tot_child-20));
-				total=total+tot_adult+tot_child-20;
+				printf("%d people added to the next queue.",(return_value-20));
+				total=return_value-20;
 				continue;
 			}
 			else
@@ -105,7 +106,7 @@ int main()
 	deletion();
 	lq.front=-1;
 	lq.rear=-1;
-	puts("More rounds? Y or N");
+	puts("This round completed. More rounds? Y or N");
 	}while(getche()=='Y' || getche()=='y');
 }
 
