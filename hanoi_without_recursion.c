@@ -56,13 +56,12 @@ int main()
 			if(st1.a[st1.top]<st3.a[st3.top] || st3.top==-1 && st1.top!=-1)
 			{
 				push3(pop1());
-				printf("Move from %c to %c\n",source,dest);
+				printf("Move one disc from %c to %c\n",source,dest);
 			}
 			else
 			{
 				push1(pop3());
-				printf("Move from%c to %c\n",dest,source);
-				//puts("Move from D to S.");
+				printf("Move one disc from %c to %c\n",dest,source);
 			}
 		}
 		else if((i%3)==0)//condition for dest to aux and vice versa
@@ -70,14 +69,12 @@ int main()
 			if(st2.a[st2.top]<st3.a[st3.top] || st3.top==-1 && st2.top!=-1)
 			{
 				push3(pop2());
-				printf("Move from %c to %c\n",aux,dest);
-				//puts("Move from A to D.");
+				printf("Move one disc from %c to %c\n",aux,dest);
 			}
 			else
 			{
 				push2(pop3());
-				printf("Move from %c to %c\n",dest,aux);
-				//puts("Move from D to A.");
+				printf("Move one disc from %c to %c\n",dest,aux);
 			}
 		}
 		else if((i%3)==2)
@@ -85,16 +82,15 @@ int main()
 			if((st1.a[st1.top]<st2.a[st2.top]|| st2.top==-1) && st1.top!=-1)
 			{
 				push2(pop1());
-				printf("Move from %c to %c\n",source,aux);
-				//puts("Move from S to A.");
+				printf("Move one disc from %c to %c\n",source,aux);
 			}
 			else
 			{
 				push1(pop2());
-				printf("Move from %c to %c\n",aux,source);
-				//puts("Move from A to S.");
+				printf("Move one disc from %c to %c\n",aux,source);
 			}
 		}
 	}
 	return 0;
 }
+
