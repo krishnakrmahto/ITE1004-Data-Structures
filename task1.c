@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<string.h>
+#include<stdlib.h>
 void listreg_push();
 void listreg_pop();
 void listreg_lastsub();
