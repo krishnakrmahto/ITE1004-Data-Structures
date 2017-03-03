@@ -5,6 +5,7 @@ void listreg_pop();
 void listreg_lastsub();
 void listreg_first10();
 void listreg_substatus();
+void total_entries();
 struct stack
 {
 	char reg[70][12];
@@ -17,7 +18,7 @@ int main()
 	listreg.top=-1;
 	do
 	{
-	printf("Enter your choice:\n1. Push\n2. Pop\n3. Display last submitted entry\n4. Display first 10 submissions\n5. Check whether submitted or not\n");
+	printf("Enter your choice:\n1. Push\n2. Pop\n3. Display last submitted entry\n4. Display first 10 submissions\n5. Check whether submitted or not\n6. Total Number of entries\n7. Exit\n");
 	scanf("%d",&choice);
 	switch(choice)
 	{
@@ -36,8 +37,12 @@ int main()
 						case 5:
 							listreg_substatus();
 							break;
+							case 7:
+								exit(0);
+								case 6:
+									total_entries();
 			
-	}}while(choice<6);
+	}}while(choice<8);
 }
 void listreg_push()
 {
@@ -136,4 +141,8 @@ void listreg_substatus()
 	if(i>listreg.top)
 	printf("%s has not submitted.\n\n",temp);
 }
+}
+void total_entries()
+{
+	printf("Total entries= %d\n",listreg.top+1);
 }
