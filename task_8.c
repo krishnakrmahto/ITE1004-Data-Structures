@@ -97,8 +97,9 @@ void show_main()
         puts("No trucks in the queue!");
     else
     {
+    	puts("The trucks yet to be serviced are:");
         for(temp=next_head;temp!=main_tail;temp=temp->next)
-        printf("The trucks yet to be serviced are:\n%u\n",temp->id);
+        printf("%u\n",temp->id);
         printf("%u\n",temp->id);
     }
 }
