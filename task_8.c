@@ -4,7 +4,6 @@
 /*next_head to keep track on the truck waiting outside the garage once one of the trucks enters the garage*/
 #include<stdio.h>
 #include<stdlib.h>
-//#define ONE
 struct node
 {
 	unsigned int id;
@@ -125,24 +124,49 @@ int main()
                 on_road(t_id);
                 break;
             case 2:
+                if(main_tail==NULL)
+                {
+                    puts("No trucks in the queue!\n");
+                    break;
+                }
                 puts("Enter the truck ID:");
                 scanf("%u",&t_id);
                 enter_garage(t_id);
                 break;
             case 3:
+                 if(main_head==NULL)//because after the truck is entered into the garage head pointer is being kept attached to it until exit
+                {
+                    puts("No trucks in the garage!\n");
+                    break;
+                }
                 puts("Enter the truck ID:");
                 scanf("%u",&t_id);
                 exit_garage(t_id);
                 break;
             case 4:
+                if(main_tail==NULL)
+                {
+                    puts("No trucks in the queue!\n");
+                    break;
+                }
                 puts("Enter the truck number, n:");
                 scanf("%u",&index);
                 retain(index);
                 break;
             case 5:
+                if(main_tail==NULL)
+                {
+                    puts("No trucks in the queue!\n");
+                    break;
+                }
                 show_main();
                 break;
             case 6:
+                if(main_tail==NULL)
+                {
+                    puts("No trucks retained!\n");
+                    break;
+                }
                 show_later();
                 break;
         }
