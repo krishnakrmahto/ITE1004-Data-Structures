@@ -1,6 +1,10 @@
+/*variable descriptions:*/
+/*main_head,main_tail and main_new are used to point to the nodes of the queue of trucks*/
+/*later_head etc for retained trucks*/
+/*next_head to keep track on the truck waiting outside the garage once one of the trucks enters the garage*/
 #include<stdio.h>
-#include<conio.h>
 #include<stdlib.h>
+//#define ONE
 struct node
 {
 	unsigned int id;
@@ -32,8 +36,19 @@ void enter_garage(unsigned int t_id)
     if(t_id==main_head->id)
     {
         //struct node *temp;
-        next_head=main_head->next;
-        main_head->next=NULL;
+        if(main_head!=main_tail)
+        {
+            printf("Train ID %d moved into garage.",main_head->id);
+            next_head=main_head->next;
+            main_head->next=NULL;
+        }
+        else
+        {
+            printf("Truck ID %d moved into the garage.",main_head->id);
+            next_head=NULL;
+            main_head->next=NULL;
+            flag=1;
+        }
     }
     else
         printf("Truck with ID %u cannot be moved!",t_id);
@@ -78,9 +93,14 @@ void retain(unsigned int index)
 void show_main()
 {
     struct node *temp;
-    for(temp=next_head;temp!=main_tail;temp=temp->next)
+    if(next_head==NULL)
+        puts("No trucks in the queue!");
+    else
+    {
+        for(temp=next_head;temp!=main_tail;temp=temp->next)
         printf("The trucks yet to be serviced are:\n%u\n",temp->id);
-    printf("%u\n",temp->id);
+        printf("%u\n",temp->id);
+    }
 }
 void show_later()
 {
