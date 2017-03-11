@@ -37,20 +37,20 @@ void enter_garage(unsigned int t_id)
         //struct node *temp;
         if(main_head!=main_tail)
         {
-            printf("Train ID %d moved into garage.",main_head->id);
+            printf("Train ID %d moved into garage.\n\n",main_head->id);
             next_head=main_head->next;
             main_head->next=NULL;
         }
         else
         {
-            printf("Truck ID %d moved into the garage.",main_head->id);
+            printf("Truck ID %d moved into the garage.\n\n",main_head->id);
             next_head=NULL;
             main_head->next=NULL;
             flag=1;
         }
     }
     else
-        printf("Truck with ID %u cannot be moved!",t_id);
+        printf("Truck with ID %u cannot be moved!\n\n",t_id);
 }
 void exit_garage(unsigned int t_id)
 {
@@ -71,10 +71,10 @@ void retain(unsigned int index)
 {
     struct node *temp;
     int i;
-    for(i=0,temp=main_head;i<(index-1);i++)
+    for(i=0,temp=main_head;i<(index-2);i++)
         temp=temp->next;
     later_nw=(struct node*)malloc(sizeof(struct node));
-    later_nw->id=(temp->next)->id;
+    later_nw->id=(temp->next)->id;//not a valid statement, the console stops responding
     temp->next=(temp->next)->next;
     if(flag2==1)
     {
@@ -88,12 +88,13 @@ void retain(unsigned int index)
         later_tail->next=later_nw;
         later_tail=later_nw;
     }
+    printf("Truck ID at index %d with ID %d has been retained for servicing later.\n",index,later_tail->id);
 }
 void show_main()
 {
     struct node *temp;
     if(next_head==NULL)
-        puts("No trucks in the queue!");
+        puts("No trucks in the queue!\n");
     else
     {
     	puts("The trucks yet to be serviced are:");
@@ -105,9 +106,19 @@ void show_main()
 void show_later()
 {
     struct node *temp;
+    if(later_tail==NULL)
+    {
+    	puts("No trucks retained!\n");
+    	return;
+	}
+    else if(later_head==later_tail)
+    {
+        printf("There is only one truck retained with ID %d\n\n",later_tail->id);
+        return;
+    }
     for(temp=later_head;temp!=later_tail;temp=temp->next)
         printf("The trucks retained are:\n%u\n",temp->id);
-    printf("%u\n",temp->id);
+    printf("%u\n\n",temp->id);
 }
 int main()
 {
@@ -119,7 +130,7 @@ int main()
         switch(choice)
         {
             case 1:
-                puts("Enter truck ID");
+                puts("Enter truck ID:");
                 scanf("%u",&t_id);
                 on_road(t_id);
                 break;
@@ -149,7 +160,7 @@ int main()
                     puts("No trucks in the queue!\n");
                     break;
                 }
-                puts("Enter the truck number, n:");
+                puts("Enter the truck index, n:");
                 scanf("%u",&index);
                 retain(index);
                 break;
