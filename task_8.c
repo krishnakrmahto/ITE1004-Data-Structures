@@ -71,24 +71,50 @@ void retain(unsigned int index)
 {
     struct node *temp;
     int i;
-    for(i=0,temp=main_head;i<(index-2);i++)
-        temp=temp->next;
-    later_nw=(struct node*)malloc(sizeof(struct node));
-    later_nw->id=(temp->next)->id;//not a valid statement, the console stops responding
-    temp->next=(temp->next)->next;
-    if(flag2==1)
+    if(index==1)
     {
-        later_nw->next=NULL;
-        flag2=0;
-        later_head=later_nw;
-        later_tail=later_nw;
-    }
-    else
-    {
-        later_tail->next=later_nw;
-        later_tail=later_nw;
-    }
-    printf("Truck ID at index %d with ID %d has been retained for servicing later.\n",index,later_tail->id);
+    	temp=next_head;
+    	next_head=next_head->next;
+    	temp->next=NULL;
+    	later_nw=(struct node*)malloc(sizeof(struct node));
+    	later_nw->id=temp->id;
+    	if(flag2==1)
+    	{
+    		later_nw->next==NULL;
+    		later_head=later_nw;
+    		later_tail=later_nw;
+    		flag2=0;
+		}
+		else
+		{
+			later_tail->next=later_nw;
+			later_tail=later_nw;
+		}
+    	printf("Truck ID at index %d with ID %d has been retained for servicing later.\n",1,temp->id);
+    	free(temp);
+	}
+	else
+	{
+    	for(i=0,temp=main_head;i<(index-2);i++)
+        	temp=temp->next;
+    	later_nw=(struct node*)malloc(sizeof(struct node));
+    	later_nw->id=(temp->next)->id;
+    	temp->next=(temp->next)->next;
+    	if(flag2==1)
+    	{
+	        later_nw->next=NULL;
+    	    later_head=later_nw;
+        	later_tail=later_nw;
+        	flag2=0;
+    	}
+    	else
+    	{
+	        later_tail->next=later_nw;
+    	    later_tail=later_nw;
+    	}
+    	free(temp);
+    	printf("Truck ID at index %d with ID %d has been retained for servicing later.\n",index,later_tail->id);
+	}
 }
 void show_main()
 {
@@ -184,4 +210,3 @@ int main()
     }while(choice<7);
     return 0;
 }
-
