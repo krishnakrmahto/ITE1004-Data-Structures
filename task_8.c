@@ -9,7 +9,7 @@ struct node
 	unsigned int id;
 	struct node *next;
 }*main_nw,*main_head,*main_tail,*later_nw,*later_head,*later_tail,*next_head;
-unsigned int flag=1,flag2=1;
+unsigned int flag=1,flag2=1,num_services=0;
 void on_road(unsigned int t_id)
 {
     main_nw=(struct node*)malloc(sizeof(struct node));
@@ -32,18 +32,26 @@ void on_road(unsigned int t_id)
 }
 void enter_garage(unsigned int t_id)
 {
-    if(t_id==main_head->id)
+    struct node *temp;
+    if(t_id==next_head->id)
     {
         //struct node *temp;
-        if(main_head!=main_tail)
+        if(main_head!=main_tail)//if there are more than one truck in the queue
         {
-            printf("Train ID %d moved into garage.\n\n",main_head->id);
-            next_head=main_head->next;
-            main_head->next=NULL;
+            //next_head=main_head->next;
+            if(main_head->next==NULL)
+            {
+                puts("One truck is still inside.");
+                return;
+            }
+            temp=next_head;
+            next_head=next_head->next;
+            temp->next=NULL;
+            printf("Truck ID %d moved into garage.\n\n",main_head->id);
         }
         else
         {
-            printf("Truck ID %d moved into the garage.\n\n",main_head->id);
+            //printf("Truck ID %d moved into the garage.\n\n",main_head->id);
             next_head=NULL;
             main_head->next=NULL;
             flag=1;
@@ -54,15 +62,19 @@ void enter_garage(unsigned int t_id)
 }
 void exit_garage(unsigned int t_id)
 {
+	num_services++;
+    struct node *temp;
     if(t_id==main_head->id)
     {
        if(main_head->next==NULL)
        {
-           free(main_head);
+           temp=main_head;
+           //free(main_head);
+           printf("Truck ID %u has left the garage.\n\n",temp->id);
            main_head=next_head;
        }
        else
-        puts("Truck is still waiting to enter into the garage.");
+        puts("Truck is still awaiting its entrance to the garage.");
     }
     else
         puts("The truck has long to go!");
@@ -74,13 +86,14 @@ void retain(unsigned int index)
     if(index==1)
     {
     	temp=next_head;
+    	if(next_head==main_head)//if not it only means that the main_head is inside the garage
+    	main_head=main_head->next;
     	next_head=next_head->next;
     	temp->next=NULL;
     	later_nw=(struct node*)malloc(sizeof(struct node));
     	later_nw->id=temp->id;
     	if(flag2==1)
     	{
-    		later_nw->next==NULL;
     		later_head=later_nw;
     		later_tail=later_nw;
     		flag2=0;
@@ -90,19 +103,19 @@ void retain(unsigned int index)
 			later_tail->next=later_nw;
 			later_tail=later_nw;
 		}
-    	printf("Truck ID at index %d with ID %d has been retained for servicing later.\n",1,temp->id);
-    	free(temp);
+    	printf("Truck ID at index %u with ID %u has been retained for servicing later.\n",1,temp->id);
+    	//free(temp->next);
 	}
 	else
 	{
-    	for(i=0,temp=main_head;i<(index-2);i++)
+    	for(i=0,temp=next_head;i<(index-2);i++)
         	temp=temp->next;
     	later_nw=(struct node*)malloc(sizeof(struct node));
     	later_nw->id=(temp->next)->id;
+    	//free(temp->next);
     	temp->next=(temp->next)->next;
     	if(flag2==1)
     	{
-	        later_nw->next=NULL;
     	    later_head=later_nw;
         	later_tail=later_nw;
         	flag2=0;
@@ -112,7 +125,7 @@ void retain(unsigned int index)
 	        later_tail->next=later_nw;
     	    later_tail=later_nw;
     	}
-    	free(temp);
+    	//free(temp->next);
     	printf("Truck ID at index %d with ID %d has been retained for servicing later.\n",index,later_tail->id);
 	}
 }
@@ -151,7 +164,7 @@ int main()
 	unsigned int choice,t_id,index;
 	do
     {
-        puts("Choose your option:\n1. New truck on road\n2. Enter garage\n3. Exit garage\n4. Retain a truck\n5. Show trucks yet to be serviced\n6. Show retained trucks");
+        printf("Choose your option:\n1. New truck on road\n2. Enter garage\n3. Exit garage\n4. Retain a truck\n5. Show trucks yet to be serviced\n6. Show retained trucks\nTotal number of services done= %u\n",num_services);
         scanf("%d",&choice);
         switch(choice)
         {
@@ -161,7 +174,7 @@ int main()
                 on_road(t_id);
                 break;
             case 2:
-                if(main_tail==NULL)
+                if(next_head==NULL)
                 {
                     puts("No trucks in the queue!\n");
                     break;
