@@ -1,118 +1,235 @@
-#include<conio.h>
-#include<stdlib.h>
+/*variable descriptions:*/
+/*main_head,main_tail and main_new are used to point to the nodes of the queue of trucks*/
+/*later_head etc for retained trucks*/
+
 #include<stdio.h>
-#define SIZE 5
-struct queue
+#include<stdlib.h>
+struct node
 {
-	int a[SIZE],front,rear;
-}cq;
-int burning()//same as deletion, as per the question it should be invoked once the queue is full.
+	unsigned int id;
+	struct node *next;
+}*main_nw,*main_head,*main_tail,*garage_nw,*garage_head,*garage_tail,*later_nw,*later_head,*later_tail,*garage_head,*garage_tail,*garage_nw;
+unsigned int flag=1,flag2=1,flag3=1,num_services=0,count_onroad=0;
+void on_road(unsigned int t_id)
 {
-	int data;//burnt/deleted (from the buf) being named as data to suit the context
-	if(cq.rear==cq.front)
-	{
-		data=cq.a[cq.front];//although both cq.rear and cq.front point to same elem, front has been conventionally used for del oper.
-		cq.rear=-1;
-		cq.front=-1;
-		return(data);
-	}
-	//else: no need of else for if condition is true, control is already being "returned" there.
-	data=cq.a[cq.front];
-	cq.front=(cq.front+1)%SIZE;
-	return(data);
-	}
-int cq_emp()
-{
-	if(cq.rear==-1)
-	return 1;
-	return 0;
+	count_onroad++;
+    main_nw=(struct node*)malloc(sizeof(struct node));
+    main_nw->id=t_id;
+    if(flag==1)
+    {
+        main_head=main_nw;
+        main_tail=main_nw;
+        //next_head=main_nw;
+        main_tail->next=main_head;//circular queue
+        flag=0;
+    }
+    else
+    {
+        main_tail->next=main_nw;
+        main_tail=main_nw;
+        main_tail->next=main_head;
+    }
+
 }
-int cq_full()
+void enter_garage(unsigned int t_id)
 {
-	if(cq.front==(cq.rear+1)%SIZE)
-	return 1;
-	return 0;
-}
-void display_old_buf()
-{
-	int i;
-	puts("\nOld Buffer:");
-	for(i=cq.front;i!=cq.rear;i=(i+1)%SIZE)
-	printf("%d\n",cq.a[i]);
-}
-void display_new_buf()
-{
-	int i;
-	puts("\nBuffer:");
-	for(i=cq.front;i!=cq.rear;i=(i+1)%SIZE)
-	printf("%d\n",cq.a[i]);
-	printf("%d\n",cq.a[i]);
-}
-int writing()//same as insertion with a small modification
-{
-    char further;
-	int data,i;
-	puts("\nEnter data to be burnt: ");
-	for(i=0;i<SIZE;i++)
-	{
-		scanf("%d",&data);
-		if(cq_emp()==1)
-		{
-			cq.rear=(cq.rear+1)%SIZE;
-			cq.front=(cq.front+1)%SIZE;
-			cq.a[cq.rear]=data;
+    if(t_id==(main_head->id))
+    {
+    	main_head=main_head->next;
+    	main_tail->next=main_head;
+    	garage_nw=(struct node*)malloc(sizeof(struct node));
+    	garage_nw->id=t_id;
+    	if(flag3==1)
+    	{
+    		garage_head=garage_nw;
+    		garage_tail=garage_nw;
+    		flag3=0;
 		}
 		else
 		{
-			cq.rear=(cq.rear+1)%SIZE;
-			cq.a[cq.rear]=data;
- 			if(cq_full()==1)
-			{
-				printf("Buffer is full, burning process is going on...\nFront= %d		Rear= %d",cq.front,cq.rear);
-				printf("\nOne data burnt.\nBurnt data: %d\n",burning());
-				do
-				{
-					printf("\n\n1. Fill more data into the buffer.\n2. Read remaining Buffer.\n3. Continue Burning.\n4. No more data to burn.\n5. Old Buffer\n	Front=%d		Rear=%d\n	Latest buffer item:%d\n",cq.front,cq.rear,cq.a[cq.rear]);
-					further=getche();
-					puts("");
-					switch(further)
-					{
-                	case '1':
-	                    writing();
-    	            case '4':
-        	        	puts("\nBurning all the data in buffer...");
-            	    	display_new_buf();
-                		cq.rear=-1;
-                		cq.front=-1;
-                		puts("\nBurning process finished.");
-                		exit(2);
-                	case '2':
-                		display_new_buf();
-                		break;
-                	case '3':
-                		if(cq_emp()==1)
-                		puts("Burning process finished.");
-                		else
-                		{
-                			printf("Burnt data: %d",burning());
-                			break;
-                		}
-                	case '5':
-                		display_old_buf();
-                		break;
-             		default:
-             			exit(0);
-					}
-				}while(further<'6');
-			}
+			garage_tail->next=garage_nw;
+			garage_tail=garage_nw;
 		}
+		printf("Truck ID %d has entered into the garage.\n\n",t_id);
 	}
+	else
+	printf("Only truck ID %u can be moved.\n\n",main_head->id);
+}
+void exit_garage(unsigned int t_id)
+{
+    struct node *temp;
+    if(t_id==garage_head->id)
+    {
+        num_services++;
+    	temp=garage_head;
+		garage_head=garage_head->next;
+		temp->next=NULL;
+		printf("Truck ID %u has left the garage.\n\n",temp->id);
+		free(temp);
+	}
+	else
+	printf("Only truck ID %u can exit.\n\n",garage_head->id);
+}
+void retain(unsigned int index)
+{
+    struct node *temp;
+    int i;
+    if(index==1)
+    {
+    	temp=main_head;
+    	main_head=main_head->next;
+    	temp->next=NULL;
+    	later_nw=(struct node*)malloc(sizeof(struct node));
+    	later_nw->id=temp->id;
+    	if(flag2==1)
+    	{
+    		later_head=later_nw;
+    		later_tail=later_nw;
+    		flag2=0;
+		}
+		else
+		{
+			later_tail->next=later_nw;
+			later_tail=later_nw;
+		}
+    	printf("Truck ID at index %u with ID %u has been retained for servicing later.\n",index,temp->id);
+    	//free(temp->next);
+	}
+	else if(index<count_onroad)
+	{
+    	for(i=0,temp=main_head;i<(index-2);i++)
+        	temp=temp->next;
+    	later_nw=(struct node*)malloc(sizeof(struct node));
+    	later_nw->id=(temp->next)->id;
+    	//free(temp->next);
+    	temp->next=(temp->next)->next;
+    	if(flag2==1)
+    	{
+    	    later_head=later_nw;
+        	later_tail=later_nw;
+        	flag2=0;
+    	}
+    	else
+    	{
+	        later_tail->next=later_nw;
+    	    later_tail=later_nw;
+    	}
+    	//free(temp->next);
+    	printf("Truck ID at index %d with ID %d has been retained for servicing later.\n",index,later_tail->id);
+	}
+	else if(index==count_onroad)
+    {
+        for(temp=main_head;temp->next!=main_tail;temp=temp->next)
+            continue;
+        main_tail=temp;//**kaam ye bcha h k ab ism nodes create krke data add krna h**************************
+
+    }
+	else
+	puts("Index is greater than the number of trucks!");
+	puts("");
+}
+void show_garage()
+{
+	struct node *temp;
+	if(garage_tail==NULL)
+	{
+		puts("Garage is empty.");
+		return;
+	}
+	else
+	{
+		puts("Trucks in the garage are IDs:");
+		for(temp=garage_head;temp!=garage_tail;temp=temp->next)
+		printf("%u\n",temp->id);
+		printf("%u\n\n",temp->id);
+	}
+}
+void show_main()
+{
+    struct node *temp;
+    if(main_head==NULL)
+        puts("No trucks in the queue!\n");
+    else
+    {
+    	puts("The trucks yet to be serviced are IDs:");
+        for(temp=main_head;temp!=main_tail;temp=temp->next)
+        printf("%u\n",temp->id);
+        printf("%u\n\n",temp->id);
+    }
+}
+void show_later()
+{
+    struct node *temp;
+    if(later_tail==NULL)
+    {
+    	puts("No trucks retained!\n");
+    	return;
+	}
+    else if(later_head==later_tail)
+    {
+        printf("There is only one truck retained with ID %d\n\n",later_tail->id);
+        return;
+    }
+    for(temp=later_head;temp!=later_tail;temp=temp->next)
+        printf("The trucks retained are IDs:\n%u\n",temp->id);
+    printf("%u\n\n",temp->id);
 }
 int main()
 {
-    cq.rear=-1;
-    cq.front=-1;
-    writing();
-	return 0;
+	unsigned int choice,t_id,index;
+	do
+    {
+        printf("Choose your option:\n1. New truck on road\n2. Enter garage\n3. Exit garage\n4. Retain a truck\n5. Show garage\n6. Show trucks yet to be serviced\n7. Show retained trucks\nTotal number of services done= %u\n",num_services);
+        scanf("%d",&choice);
+        switch(choice)
+        {
+            case 1:
+                puts("Enter truck ID:");
+                scanf("%u",&t_id);
+                on_road(t_id);
+                break;
+            case 2:
+                if(main_head==NULL)
+                {
+                    puts("No trucks in the queue!\n");
+                    break;
+                }
+                puts("Enter the truck ID:");
+                scanf("%u",&t_id);
+                enter_garage(t_id);
+                break;
+            case 3:
+                 if(main_head==NULL)//because after the truck is entered into the garage head pointer is being kept attached to it until exit
+                {
+                    puts("No trucks in the garage!\n");
+                    break;
+                }
+                puts("Enter the truck ID:");
+                scanf("%u",&t_id);
+                exit_garage(t_id);
+                break;
+            case 4:
+                if(count_onroad==0)
+                {
+                    puts("No trucks in the queue!\n");
+                    break;
+                }
+                puts("Enter the truck index, n:");
+                scanf("%u",&index);
+                retain(index);
+                break;
+            case 6:
+                show_main();
+                break;
+            case 7:
+                show_later();
+                break;
+        	case 5:
+        		show_garage();
+        		break;
+
+        }
+    }while(choice<8);
+    return 0;
 }
 
