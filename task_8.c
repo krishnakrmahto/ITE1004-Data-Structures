@@ -19,7 +19,6 @@ void on_road(unsigned int t_id)
     {
         main_head=main_nw;
         main_tail=main_nw;
-        //next_head=main_nw;
         main_tail->next=main_head;//circular queue
         flag=0;
     }
@@ -29,7 +28,7 @@ void on_road(unsigned int t_id)
         main_tail=main_nw;
         main_tail->next=main_head;
     }
-
+    printf("Truck ID %d has been added to the queue.\n\n",t_id);
 }
 void enter_garage(unsigned int t_id)
 {
@@ -57,15 +56,27 @@ void enter_garage(unsigned int t_id)
 }
 void exit_garage(unsigned int t_id)
 {
-	num_services++;
+	
     struct node *temp;
     if(t_id==garage_head->id)
     {
-    	temp=garage_head;
-		garage_head=garage_head->next;
-		temp->next=NULL;
-		printf("Truck ID %u has left the garage.\n\n",temp->id);
-		free(temp);
+    	if(garage_head==garage_tail)
+    	{
+    		//garage_head->id=NULL;
+    		garage_tail=NULL;
+    		printf("The truck with ID %d has left the garage.\n\n",t_id);
+    		flag3=1;
+		}
+    	
+    	else
+    	{
+    		temp=garage_head;
+			garage_head=garage_head->next;
+			temp->next=NULL;
+			printf("Truck ID %u has left the garage.\n\n",temp->id);
+			num_services++;
+			free(temp);
+		}
 	}
 	else
 	printf("Only truck ID %u can exit.\n\n",garage_head->id);
