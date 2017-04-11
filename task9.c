@@ -9,12 +9,15 @@ NODE *nw1,*nw2,*head1,*head2,*tail1,*tail2,*head_final,*tail_final;
 NODE *find_mid(NODE *head,NODE *tail)
 {
 	int count=1;
-	NODE *temp1,*temp2;
-	for(temp2=head;temp2!=NULL;temp2=temp2->next,(count%2==0)?(temp1=temp1->next):(temp2=temp2))
-	continue;
+	NODE *temp1=head,*temp2=head;
+	for(/*temp2=head,temp1=head*/;temp2!=tail;temp2=temp2->next/*,(count%2==0)?(temp1=temp1->next):(temp2=temp2)*/)
+    {
+        if(count++%2==0)
+            temp1=temp1->next;
+    }
 	return temp1;
 }
-void merge(NODE *head,NODE *mid,NODE *mid_next,NODE *tail)
+/*void merge(NODE *head,NODE *mid,NODE *mid_next,NODE *tail)
 {
 	NODE *temp1,*temp2,*temp3;
 	if(head->reg>mid_next->reg)
@@ -61,14 +64,61 @@ void merge(NODE *head,NODE *mid,NODE *mid_next,NODE *tail)
 		temp1->prev=temp3;
 		tail_final=tail1;
 	}
+}*/
+void merge(NODE *head,NODE *mid,NODE *mid_next,NODE *tail)
+{
+	NODE *temp;
+	if(head->reg<mid_next->reg)
+	{
+		head_final=head;
+		head=head->next;
+	}
+	else
+	{
+		head_final=mid_next;
+		mid_next=mid_next->next;
+	}
+	temp=head_final;
+	for(;head!=mid->next||mid_next!=tail->next;)
+	{
+		if(head->reg<mid_next->reg)
+		{
+			temp->next=head;
+			head->prev=temp;
+			temp=temp->next;
+			head=head->next;
+		}
+		else
+		{
+			temp->next=mid_next;
+			mid_next->prev=temp;
+			temp=temp->next;
+			mid_next=mid_next->next;
+		}
+	}
+	if(head==mid->next)
+	{
+		head=head->prev;//or, head=mid;
+		head->next=mid_next;
+		mid_next->prev=head;
+	}
+	else
+	{
+		mid_next=tail;
+		mid_next->next=head;
+		head->prev=mid_next;
+	}
 }
 void merge_sort(NODE *head,NODE *tail)
 {
-	NODE *mid;
-	mid=find_mid(head,tail);
-	merge_sort(head,mid);
-	merge_sort(head,mid);
-	merge(head,mid,mid->next,tail);
+	if(head!=tail)
+	{
+		NODE *mid;
+		mid=find_mid(head,tail);
+		merge_sort(head,mid);
+		merge_sort(mid->next,tail);
+		merge(head,mid,mid->next,tail);
+	}
 }
 void creation1(int n1)
 {
