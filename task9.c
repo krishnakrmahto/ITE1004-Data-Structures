@@ -68,7 +68,7 @@ NODE *find_mid(NODE *head,NODE *tail)
 void merge(NODE *head,NODE *mid,NODE *mid_next,NODE *tail)
 {
 	NODE *temp;
-	if(head->reg<mid_next->reg)
+	if(head->reg<=mid_next->reg)
 	{
 		head_final=head;
 		head=head->next;
@@ -79,9 +79,9 @@ void merge(NODE *head,NODE *mid,NODE *mid_next,NODE *tail)
 		mid_next=mid_next->next;
 	}
 	temp=head_final;
-	for(;head!=mid->next||mid_next!=tail->next;)
+	for(;head!=mid->next&&mid_next!=tail->next;)
 	{
-		if(head->reg<mid_next->reg)
+		if(head->reg<=mid_next->reg)
 		{
 			temp->next=head;
 			head->prev=temp;
