@@ -49,8 +49,8 @@ void merge_sort(NODE *head,NODE *tail)
 		NODE *mid,**mid_next=(NODE*)malloc(sizeof(NODE));
 		mid=find_mid(head,tail,mid_next);
 		merge_sort(head,mid);
-		merge_sort(mid_next,tail);
-		head_final=merge(head,mid,mid_next,tail);//in the end of all the recursions, head_final will point to the first element
+		merge_sort(*mid_next,tail);
+		head_final=merge(head,mid,*mid_next,tail);//in the end of all the recursions, head_final will point to the first element
 	}
 }
 void creation1(int n1)
@@ -126,4 +126,3 @@ int main()
 	display_final_list(head_final);
 	return 0;
 }
-
