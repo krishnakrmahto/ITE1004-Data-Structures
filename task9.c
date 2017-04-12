@@ -3,121 +3,54 @@
 typedef struct node
 {
 	int reg;
-	struct node *next,*prev;
+	struct node *next;
 }NODE;
 NODE *nw1,*nw2,*head1,*head2,*tail1,*tail2,*head_final,*tail_final;
-NODE *find_mid(NODE *head,NODE *tail)
+NODE *find_mid(NODE *head,NODE *tail,NODE** mid_next)//standard routine to find the mid-node of a linked list!
 {
 	int count=1;
-	NODE *temp1=head,*temp2=head;
-	for(/*temp2=head,temp1=head*/;temp2!=tail;temp2=temp2->next/*,(count%2==0)?(temp1=temp1->next):(temp2=temp2)*/)
-    {
-        if(count++%2==0)
-            temp1=temp1->next;
-    }
-	return temp1;
-}
-/*void merge(NODE *head,NODE *mid,NODE *mid_next,NODE *tail)
-{
-	NODE *temp1,*temp2,*temp3;
-	if(head->reg>mid_next->reg)
+	NODE *temp1,*temp2;
+	for(temp1=head,temp2=head->next;temp2!=NULL;)
 	{
-		head_final=mid_next;
-		temp1=mid_next->next;
-		temp2=head;
-		head_final->prev=NULL;
-	}
-	else
-	{
-		head_final=head;
-		temp2=head_final->next;
-		temp1=mid_next;
-		head_final->next=NULL;
-
-	}
-	for(temp3=head_final;temp1!=NULL||temp2!=NULL;)
-	{
-		if(temp1->reg>temp2->reg)
+		temp2=temp2->next;
+		if(temp2!=NULL)
 		{
-			temp3->next=temp2;
-			temp2->prev=temp3;
 			temp2=temp2->next;
-			temp3=temp3->next;
-		}
-		else
-		{
-			temp3->next=temp1;
-			temp1->prev=temp3;
 			temp1=temp1->next;
-			temp3=temp3->next;
 		}
 	}
-	if(temp1==NULL)
-	{
-		temp3->next=temp2;
-		temp2->prev=temp3;
-		tail_final=tail2;
-	}
-	else
-	{
-		temp3->next=temp1;
-		temp1->prev=temp3;
-		tail_final=tail1;
-	}
-}*/
-void merge(NODE *head,NODE *mid,NODE *mid_next,NODE *tail)
+	*mid_next=temp1->next;
+	temp1->next=NULL;
+	return(temp1);
+}
+NODE *merge(NODE *head,NODE *mid,NODE *mid_next,NODE *tail)
 {
-	NODE *temp;
+	NODE *head_curr;
+	if(head==NULL)
+	return mid_next;
+	else
+	return head;
 	if(head->reg<=mid_next->reg)
 	{
-		head_final=head;
-		head=head->next;
+		head_curr=head;
+		head_curr->next=merge(head->next,mid,mid_next,tail);
 	}
 	else
 	{
-		head_final=mid_next;
-		mid_next=mid_next->next;
+		head_curr=mid_next;
+		head_curr->next=merge(head,mid,mid_next->next,tail);
 	}
-	temp=head_final;
-	for(;head!=mid->next&&mid_next!=tail->next;)
-	{
-		if(head->reg<=mid_next->reg)
-		{
-			temp->next=head;
-			head->prev=temp;
-			temp=temp->next;
-			head=head->next;
-		}
-		else
-		{
-			temp->next=mid_next;
-			mid_next->prev=temp;
-			temp=temp->next;
-			mid_next=mid_next->next;
-		}
-	}
-	if(head==mid->next)
-	{
-		head=head->prev;//or, head=mid;
-		head->next=mid_next;
-		mid_next->prev=head;
-	}
-	else
-	{
-		mid_next=tail;
-		mid_next->next=head;
-		head->prev=mid_next;
-	}
+	return head_curr;
 }
 void merge_sort(NODE *head,NODE *tail)
 {
 	if(head!=tail)
 	{
-		NODE *mid;
-		mid=find_mid(head,tail);
+		NODE *mid,**mid_next=(NODE*)malloc(sizeof(NODE));
+		mid=find_mid(head,tail,mid_next);
 		merge_sort(head,mid);
-		merge_sort(mid->next,tail);
-		merge(head,mid,mid->next,tail);
+		merge_sort(mid_next,tail);
+		head_final=merge(head,mid,mid_next,tail);//in the end of all the recursions, head_final will point to the first element
 	}
 }
 void creation1(int n1)
@@ -128,14 +61,12 @@ void creation1(int n1)
 	scanf("%d",&nw1->reg);
 	head1=nw1;
 	tail1=nw1;
-	head1->prev=NULL;
 	tail1->next=NULL;
 	for(i=0;i<n1-1;i++)
 	{
 		nw1=(struct node*)malloc(sizeof(struct node));
 		scanf("%d",&nw1->reg);
 		tail1->next=nw1;
-		nw1->prev=tail1;
 		tail1=nw1;
 		tail1->next=NULL;
 	}
@@ -148,14 +79,12 @@ void creation2(int n2)
 	scanf("%d",&nw2->reg);
 	head2=nw2;
 	tail2=nw2;
-	head2->prev=NULL;
 	tail2->next=NULL;
 	for(i=0;i<n2-1;i++)
 	{
 		nw2=(struct node*)malloc(sizeof(struct node));
 		scanf("%d",&nw2->reg);
 		tail2->next=nw2;
-		nw2->prev=tail2;
 		tail2=nw2;
 		tail2->next=NULL;
 	}
@@ -163,8 +92,6 @@ void creation2(int n2)
 void final_merge(NODE *head1,NODE *tail1,NODE *head2,NODE *tail2)
 {
 	tail1->next=head2;
-	head2->prev=tail1;
-	//tail1=tail2;
 	head_final=head1;
 	tail_final=tail2;
 }
