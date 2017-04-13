@@ -3,68 +3,90 @@
 typedef struct node
 {
 	int reg;
-	struct node *next;
+    struct node* next;
 }NODE;
-NODE *nw1,*nw2,*head1,*head2,*tail1,*tail2,*head_final,*tail_final;
-NODE *find_mid(NODE *head,NODE *tail,NODE** mid_next)//standard routine to find the mid-node of a linked list!
+NODE *head1,*head2,*tail1,*tail2,*head_final,*tail_final,*nw1,*nw2;
+NODE* sortedmerge(NODE* a, NODE* b);
+void find_mid(NODE* source, NODE** frontRef, NODE** backRef);
+void mergesort(NODE** Ptr_To_head)//head is pointer to first node
 {
-	int count=1;
-	NODE *temp1,*temp2;
-	for(temp1=head,temp2=head->next;temp2!=NULL;)
-	{
-		temp2=temp2->next;
-		if(temp2!=NULL)
-		{
-			temp2=temp2->next;
-			temp1=temp1->next;
-		}
-	}
-	*mid_next=temp1->next;
-	temp1->next=NULL;
-	return(temp1);
+    NODE* head = *Ptr_To_head; 
+    NODE* a;
+	NODE* b;
+    if((head==NULL)||(head->next==NULL))
+        return;
+    find_mid(head, &a, &b);
+    mergesort(&a);
+    mergesort(&b);
+    *Ptr_To_head = sortedmerge(a,b);
 }
-NODE *merge(NODE *head,NODE *mid,NODE *mid_next,NODE *tail)
+NODE* sortedmerge(NODE* a, NODE* b)
 {
-	NODE *head_curr;
-	if(head==NULL)
-	return mid_next;
+    NODE *result=NULL;
+    if (a==NULL)
+        return b;
+    else if (b==NULL)
+        return a;    
+    if (a->reg<=b->reg)
+    {
+        result=a;
+        result->next=sortedmerge(a->next,b);
+    }
 	else
-	return head;
-	if(head->reg<=mid_next->reg)
-	{
-		head_curr=head;
-		head_curr->next=merge(head->next,mid,mid_next,tail);
-	}
-	else
-	{
-		head_curr=mid_next;
-		head_curr->next=merge(head,mid,mid_next->next,tail);
-	}
-	return head_curr;
-}
-void merge_sort(NODE *head,NODE *tail)
+    {
+        result=b;
+        result->next=sortedmerge(a,b->next);
+    }
+    return(result);
+}    
+void find_mid(NODE* source, NODE** frontRef, NODE** backRef)
 {
-	if(head!=tail)
-	{
-		NODE *mid,**mid_next=(NODE*)malloc(sizeof(NODE));
-		mid=find_mid(head,tail,mid_next);
-		merge_sort(head,mid);
-		merge_sort(*mid_next,tail);
-		head_final=merge(head,mid,*mid_next,tail);//in the end of all the recursions, head_final will point to the first element
+    NODE* fast;
+    NODE* slow;
+    if (source==NULL || source->next==NULL)
+    {
+		*frontRef = source;
+		*backRef = NULL;
 	}
+    else
+    {
+        for(slow=source,fast=source->next;fast!=NULL;)
+        {
+			fast=fast->next;
+            if (fast!=NULL)
+            {
+            	slow=slow->next;
+                fast=fast->next;
+            }
+        }
+	*frontRef=source;
+    *backRef=slow->next;
+	slow->next=NULL;
+    }
 }
+void final_merge(NODE *head1,NODE *tail1,NODE *head2,NODE *tail2)
+{
+	tail1->next=head2;
+	head_final=head1;
+	tail_final=tail2;
+}
+void printlist(NODE *node)
+{
+    for(;node!=NULL;node=node->next)
+		printf("%d ",node->reg);
+}     
 void creation1(int n1)
 {
 	int i;
-	puts("enter data: ");
-	nw1=(struct node*)malloc(sizeof(struct node));
+	printf("Enter registration numbers of %d students:\n ",n1);
+	nw1=(NODE*)malloc(sizeof(NODE));
 	scanf("%d",&nw1->reg);
 	head1=nw1;
 	tail1=nw1;
 	tail1->next=NULL;
 	for(i=0;i<n1-1;i++)
 	{
-		nw1=(struct node*)malloc(sizeof(struct node));
+		nw1=(NODE*)malloc(sizeof(NODE));
 		scanf("%d",&nw1->reg);
 		tail1->next=nw1;
 		tail1=nw1;
@@ -74,32 +96,20 @@ void creation1(int n1)
 void creation2(int n2)
 {
 	int i;
-	puts("enter data: ");
-	nw2=(struct node*)malloc(sizeof(struct node));
+	printf("Enter registration numbers of %d students:\n ",n2);
+	nw2=(NODE*)malloc(sizeof(NODE));
 	scanf("%d",&nw2->reg);
 	head2=nw2;
 	tail2=nw2;
 	tail2->next=NULL;
 	for(i=0;i<n2-1;i++)
 	{
-		nw2=(struct node*)malloc(sizeof(struct node));
+		nw2=(NODE*)malloc(sizeof(NODE));
 		scanf("%d",&nw2->reg);
 		tail2->next=nw2;
 		tail2=nw2;
 		tail2->next=NULL;
 	}
-}
-void final_merge(NODE *head1,NODE *tail1,NODE *head2,NODE *tail2)
-{
-	tail1->next=head2;
-	head_final=head1;
-	tail_final=tail2;
-}
-void display_final_list(NODE *temp)
-{
-	puts("Resultant list of students: ");
-	for(;temp!=NULL;temp=temp->next)
-	printf("%d\n",temp->reg);
 }
 int main()
 {
@@ -118,11 +128,12 @@ int main()
 			final_merge(head1,tail1,head2,tail2);
 			break;
 		case 2:
-			merge_sort(head1,tail1);
-			merge_sort(head2,tail2);
+			mergesort(&head1);
+			mergesort(&head2);
 			final_merge(head1,tail1,head2,tail2);
+			mergesort(&head_final);
 			break;
 	}
-	display_final_list(head_final);
-	return 0;
-}
+	printlist(head_final);
+
+    }
