@@ -51,7 +51,7 @@ void disp_pn(NODE *address)
 	if(address!=tail)
 	printf("Next record: %d- %s\n\n",address->next->st_rec.role,address->next->st_rec.name);
 	else
-	puts("It's the last element.'");
+	puts("It's the last element.");
 }
 void insert_rec()
 {
@@ -81,6 +81,12 @@ void search()
     }
     else
     {
+    	if(temp->st_rec.role==role)
+    	{
+    		puts("Record found. It's between: ");
+    		disp_pn(temp);
+    		return;
+		}
         puts("Record not found!");
         return;
     }
@@ -158,4 +164,5 @@ int main()
 	}while(choice2=='Y'||choice2=='y');
 	return 0;
 }
+
 
