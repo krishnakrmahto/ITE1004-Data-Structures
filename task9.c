@@ -3,137 +3,151 @@
 typedef struct node
 {
 	int reg;
-    struct node* next;
+	struct node *next;
 }NODE;
-NODE *head1,*head2,*tail1,*tail2,*head_final,*tail_final,*nw1,*nw2;
-NODE* sortedmerge(NODE* a, NODE* b);
-void find_mid(NODE* source, NODE** frontRef, NODE** backRef);
-void mergesort(NODE** Ptr_To_head)//head is pointer to first node
-{
-    NODE* head = *Ptr_To_head; 
-    NODE* a;
-	NODE* b;
-    if((head==NULL)||(head->next==NULL))
-        return;
-    find_mid(head, &a, &b);
-    mergesort(&a);
-    mergesort(&b);
-    *Ptr_To_head = sortedmerge(a,b);
-}
-NODE* sortedmerge(NODE* a, NODE* b)
-{
-    NODE *result=NULL;
-    if (a==NULL)
-        return b;
-    else if (b==NULL)
-        return a;    
-    if (a->reg<=b->reg)
-    {
-        result=a;
-        result->next=sortedmerge(a->next,b);
-    }
-	else
-    {
-        result=b;
-        result->next=sortedmerge(a,b->next);
-    }
-    return(result);
-}    
-void find_mid(NODE* source, NODE** frontRef, NODE** backRef)
-{
-    NODE* fast;
-    NODE* slow;
-    if (source==NULL || source->next==NULL)
-    {
-		*frontRef = source;
-		*backRef = NULL;
-	}
-    else
-    {
-        for(slow=source,fast=source->next;fast!=NULL;)
-        {
-			fast=fast->next;
-            if (fast!=NULL)
-            {
-            	slow=slow->next;
-                fast=fast->next;
-            }
-        }
-	*frontRef=source;
-    *backRef=slow->next;
-	slow->next=NULL;
-    }
-}
-void final_merge(NODE *head1,NODE *tail1,NODE *head2,NODE *tail2)
-{
-	tail1->next=head2;
-	head_final=head1;
-	tail_final=tail2;
-}
-void printlist(NODE *node)
-{
-    for(;node!=NULL;node=node->next)
-		printf("%d ",node->reg);
-}     
-void creation1(int n1)
+NODE *nw1,*nw2,*head1,*head2,*tail1,*tail2;
+int flag1=1,flag2=1;
+void creation1(int n)
 {
 	int i;
-	printf("Enter registration numbers of %d students:\n ",n1);
-	nw1=(NODE*)malloc(sizeof(NODE));
-	scanf("%d",&nw1->reg);
-	head1=nw1;
-	tail1=nw1;
-	tail1->next=NULL;
-	for(i=0;i<n1-1;i++)
+	if(n!=0)
+	printf("Enter the registration numbers of %d students:\n",n);
+	for(i=0;i<n;i++)
 	{
 		nw1=(NODE*)malloc(sizeof(NODE));
 		scanf("%d",&nw1->reg);
-		tail1->next=nw1;
-		tail1=nw1;
-		tail1->next=NULL;
+		if(flag1==1)
+		{
+			head1=nw1;
+			tail1=nw1;
+			tail1->next=NULL;
+			flag1=0;
+		}
+		else
+		{
+			tail1->next=nw1;
+			tail1=nw1;
+			tail1->next=NULL;
+		}
 	}
 }
-void creation2(int n2)
+void creation2(int n)
 {
 	int i;
-	printf("Enter registration numbers of %d students:\n ",n2);
-	nw2=(NODE*)malloc(sizeof(NODE));
-	scanf("%d",&nw2->reg);
-	head2=nw2;
-	tail2=nw2;
-	tail2->next=NULL;
-	for(i=0;i<n2-1;i++)
+	if(n!=0)
+	printf("Enter the registration numbers of %d students:\n",n);
+	for(i=0;i<n;i++)
 	{
 		nw2=(NODE*)malloc(sizeof(NODE));
 		scanf("%d",&nw2->reg);
-		tail2->next=nw2;
-		tail2=nw2;
-		tail2->next=NULL;
+		if(flag2==1)
+		{
+			head2=nw2;
+			tail2=nw2;
+			tail2->next=NULL;
+			flag2=0;
+		}
+		else
+		{
+			tail2->next=nw2;
+			tail2=nw2;
+			tail2->next=NULL;
+		}
 	}
+}
+void find_mid(NODE *head,NODE **a,NODE **b)
+{
+	NODE *slow,*fast;
+	for(slow=head,fast=head->next;fast!=NULL;)
+	{
+		fast=fast->next;
+		if(fast!=NULL)
+		{
+			slow=slow->next;
+			fast=fast->next;
+		}
+	}
+	*a=head;
+	*b=slow->next;
+	slow->next=NULL;
+}
+NODE *merge(NODE **head1_ptr,NODE **head2_ptr)
+{
+	if(*head1_ptr==NULL)
+	return *head2_ptr;
+	else if(*head2_ptr==NULL)
+	return *head1_ptr;
+	if((*head1_ptr)->reg<=(*head2_ptr)->reg)
+	{
+		(*head1_ptr)->next=merge(&((*head1_ptr)->next),head2_ptr);
+		return(*head1_ptr);
+	}
+	else
+	{
+		(*head2_ptr)->next=merge(head1_ptr,&((*head2_ptr)->next));
+		return(*head2_ptr);
+	}
+}
+void merge_sort(NODE **Ptr_to_head)
+{
+	NODE *first_head,*second_head;
+	if(*Ptr_to_head!=NULL && (*Ptr_to_head)->next!=NULL)
+	{
+		find_mid(*Ptr_to_head,&first_head,&second_head);
+		merge_sort(&first_head);
+		merge_sort(&second_head);
+		*Ptr_to_head=merge(&first_head,&second_head);
+	}
+}
+void final_merge(NODE *temp1,NODE* temp2)
+{
+	/*if(temp1==NULL)
+	return;
+	if(temp2=NULL)
+	return;*/
+	for(;temp1->next!=NULL;temp1=temp1->next)
+	continue;
+	tail1=temp1;
+	tail1->next=temp2;
+}
+void printlist(NODE *temp)
+{
+	puts("Required list");
+	for(;temp!=NULL;temp=temp->next)
+	printf(" %d ",temp->reg);
+	puts("");
 }
 int main()
 {
-	int n1,n2,choice;
-	puts("Enter the number of students for Set 1:");
+	head1=head2=tail1=tail2=nw1=nw2=NULL;
+	int n1,n2,choice1;
+	char choice2;
+	puts("Enter the number of students for SET A: ");
 	scanf("%d",&n1);
 	creation1(n1);
-	puts("Enter the number of students for Set 2: ");
+	printlist(head1);
+	puts("Enter the number of students for SET B: ");
 	scanf("%d",&n2);
 	creation2(n2);
-	puts("Enter your choice:\n1. Simple merging\n2. Merge into a sorted list");
-	scanf("%d",&choice);
-	switch(choice)
+	//printlist(head2);
+	puts("Enter your choice");
+	puts("1. Simple merging");
+	puts("2. Merge into a sorted list");
+	scanf("%d",&choice1);
+	switch(choice1)
 	{
 		case 1:
-			final_merge(head1,tail1,head2,tail2);
+			final_merge(head1,head2);
 			break;
 		case 2:
-			mergesort(&head1);
-			mergesort(&head2);
-			final_merge(head1,tail1,head2,tail2);
-			mergesort(&head_final);
+			merge_sort(&head1);
+			//printlist(head1);
+			merge_sort(&head2);
+
+			final_merge(head1,head2);
+			merge_sort(&head1);
 			break;
 	}
-	printlist(head_final);
+	printlist(head1);
+}
 
-    }
