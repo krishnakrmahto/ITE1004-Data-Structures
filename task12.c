@@ -25,30 +25,149 @@ void rec_entry(int n)
 		tail->next=NULL;
 	}
 }
-void swap(RECORD *right,RECORD *left)
+void insertion_sort(RECORD *head)
 {
-	left->next=right->next;
-	right->prev=left->prev;
-	left->prev=right;
-	right->next=left;
-	if(right->prev!=NULL)
-	right->prev->next=right;//if right->prev==NULL,then this line shoulnt be used
-	if(left->next!=NULL)
-	left->next->prev=left;
-}
-void insertion_sort(RECORD *start,RECORD *end)
-{
-	int val_to_insert;
-	RECORD *temp,*hole,*node_to_insert;
-	for(temp=start->next;temp!=NULL;temp=temp->next)
+	RECORD *temp1,*temp2;
+	int temp;
+	for(temp1=head->next;temp1!=NULL;temp1=temp1->next)
 	{
-		val_to_insert=temp->id;
-		for(hole=temp;hole!=start;hole=hole->prev)
+		for(temp2=head;temp2!=temp1;temp2=temp2->next)
 		{
-			if(hole->prev->id>val_to_insert)
-			swap(hole,hole->prev);
+			if(temp2->id>temp1->id)
+			{
+				temp=temp2->id;
+				temp2->id=temp1->id;
+				temp1->id=temp;
+				temp=temp2->day;
+				temp2->day=temp1->day;
+				temp1->day=temp;
+				temp=temp2->month;
+				temp2->month=temp1->month;
+				temp1->month=temp;
+				temp=temp2->year;
+				temp2->year=temp1->year;
+				temp1->year=temp;
+				temp=temp2->key_val;
+				temp2->key_val=temp1->key_val;
+				temp1->key_val=temp;
+				
+			}
 		}
 	}
+}
+void selection_sort_year(RECORD *head)
+{
+	RECORD *temp1,*temp2;
+	int temp;
+	for(temp1=head;temp1->next->next!=NULL;temp1=temp1->next)
+	{
+		for(temp2=temp1->next;temp2!=tail;temp2=temp2->next)
+		{
+			if(temp1->year>temp2->year)
+			{
+				temp=temp1->id;
+				temp1->id=temp2->id;
+				temp2->id=temp;
+				temp=temp1->day;
+				temp1->day=temp2->day;
+				temp2->day=temp;
+				temp=temp1->month;
+				temp1->month=temp2->month;
+				temp2->month=temp;
+				temp=temp1->year;
+				temp1->year=temp2->year;
+				temp2->year=temp;
+				temp=temp1->key_val;
+				temp1->key_val=temp2->key_val;
+				temp2->key_val=temp;
+				
+			}
+		}
+	}
+}
+void selection_sort_month(RECORD *head)
+{
+	RECORD *temp1,*temp2;
+	int temp;
+	for(temp1=head;temp1->next->next!=NULL;temp1=temp1->next)
+	{
+		for(temp2=temp1->next;temp2!=tail;temp2=temp2->next)
+		{
+			if((temp1->month>temp2->month)&&(temp1->year>temp2->year))
+			{
+				temp=temp1->id;
+				temp1->id=temp2->id;
+				temp2->id=temp;
+				temp=temp1->day;
+				temp1->day=temp2->day;
+				temp2->day=temp;
+				temp=temp1->month;
+				temp1->month=temp2->month;
+				temp2->month=temp;
+				temp=temp1->year;
+				temp1->year=temp2->year;
+				temp2->year=temp;
+				temp=temp1->key_val;
+				temp1->key_val=temp2->key_val;
+				temp2->key_val=temp;
+				
+			}
+		}
+	}
+}
+void selection_sort_day(RECORD *head)
+{
+	RECORD *temp1,*temp2;
+	int temp;
+	for(temp1=head;temp1->next->next!=NULL;temp1=temp1->next)
+	{
+		for(temp2=temp1->next;temp2!=tail;temp2=temp2->next)
+		{
+			if((temp1->day>temp2->day)&&(temp1->month>temp2->month)&&(temp1->year>temp2->year))
+			{
+				temp=temp1->id;
+				temp1->id=temp2->id;
+				temp2->id=temp;
+				temp=temp1->day;
+				temp1->day=temp2->day;
+				temp2->day=temp;
+				temp=temp1->month;
+				temp1->month=temp2->month;
+				temp2->month=temp;
+				temp=temp1->year;
+				temp1->year=temp2->year;
+				temp2->year=temp;
+				temp=temp1->key_val;
+				temp1->key_val=temp2->key_val;
+				temp2->key_val=temp;
+				
+			}
+		}
+	}
+}
+int stability(RECORD *head)
+{
+	int flag=1;
+	RECORD *temp1,*temp2;
+	for(temp1=head;temp1!=NULL;temp1=temp1->next)
+	{
+		for(temp2=temp1->next;temp2!=NULL;temp2=temp2->next)
+		{
+			if(temp1->day==temp2->day&&temp1->month==temp2->month&&temp1->year==temp2->year)
+			{
+				if(temp1->key_val<temp2->key_val)
+				continue;
+				else
+				{
+					flag=0;
+					break;
+				}
+			}
+		}
+		if(flag==0)
+		break;
+	}
+	return(flag);
 }
 void printlist(RECORD *head)
 {
@@ -60,7 +179,7 @@ void printlist(RECORD *head)
 }
 int main()
 {
-	int i,n,choice,flag=1;
+	int i,n,choice,flag=1,stability_chk;
 	char choice2;
 	puts("Enter the number of older records: ");
 	scanf("%d",&n);
@@ -89,21 +208,42 @@ int main()
 			tail->next=NULL;
 		}
 	}
-	puts("1. Enter one new record\n2. Enter multiple new records");
-	scanf("%d",&choice);
-	switch(choice)
+	do
 	{
-		case 1:
-			rec_entry(1);
-			break;
-		case 2:
-			puts("Enter the number of records: ");
-			scanf("%d",&n);
-			rec_entry(n);
-			break;
-	}
-	insertion_sort(head,tail);
-	printlist(head);
+		puts("\n1. Enter one new record\n2. Enter multiple new records");
+		puts("3. Sort according to ID (insertion sort) and check stability of algorithm");
+		puts("4. Sort according to date (selection sort) and check stability of algorithm");
+		scanf("%d",&choice);
+		switch(choice)
+		{
+			case 1:
+				rec_entry(1);
+				break;
+			case 2:
+				puts("\nEnter the number of records: ");
+				scanf("%d",&n);
+				rec_entry(n);
+				break;
+			case 3:
+				insertion_sort(head);
+				puts("The algorithm is stable!");
+				printlist(head);
+				break;
+			case 4:
+				selection_sort_year(head);
+				selection_sort_month(head);
+				selection_sort_day(head);
+				stability_chk=stability(head);
+				if(stability_chk==1)
+				puts("The algorithm is stable!");
+				else
+				puts("The algorithm is unstable!");
+				printlist(head);
+				break;
+		}
+		
+	}while(choice<5);
 
 }
+
 
