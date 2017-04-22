@@ -1,3 +1,5 @@
+#include<stdio.h>
+#include<stdlib.h>
 typedef struct date
 {
 	int day,month,year;
@@ -16,14 +18,14 @@ PDT *create_node()
 {
 	nw=(PDT*)malloc(sizeof(PDT));
 	nw->left=NULL;
-	nw->right=null;
+	nw->right=NULL;
 	return nw;
 }
 PDT *insertion(PDT *root,int insert_code)
 {
 	PDT *parent;
 	create_node();//a node pointed by nw global variable is create
-	nw->code=insert_code
+	nw->code=insert_code;
 	puts("Enter name of the product: ");
 	scanf("%s",nw->name);
 	puts("Enter price of the product:");
@@ -63,8 +65,6 @@ PDT *insertion(PDT *root,int insert_code)
 				puts("Product already exists!");
 				return nw;
 			}
-		}
-		
 		}	
 	}
 	return nw;	
@@ -73,7 +73,7 @@ PDT *find(PDT *root,int search_code)
 {
 	if(root==NULL)
 	return NULL;
-	if(seach_code<root->code)
+	if(search_code<root->code)
 	return(find(root->left,search_code));
 	if(search_code>root->code)
 	return(find(root->right,search_code));
@@ -120,9 +120,54 @@ void update(PDT *node)
 			break;
 	}
 }
+void inorder(PDT *root)
+{
+	if(root!=NULL)
+	{
+		inorder(root->left);
+		printf("Code: %20d",root->code);
+		printf("Name: %20s",root->name);
+		printf("Price: %20d",root->price);
+		printf("Quantity: %20d",root->qty);
+		printf("Receive Date: %20d",root->rcv_date);
+		printf("Expiry Date: %20d",root->exp_date);
+		puts("");
+		inorder(root->right);
+	}
+}
+void preorder(PDT *root)
+{
+	if(root!=NULL)
+	{
+		printf("Code: %20d",root->code);
+		printf("Name: %20s",root->name);
+		printf("Price: %20d",root->price);
+		printf("Quantity: %20d",root->qty);
+		printf("Receive Date: %20d",root->rcv_date);
+		printf("Expiry Date: %20d",root->exp_date);
+		puts("");
+		preorder(root->left);
+		preorder(root->right);
+	}
+}
+void postorder(PDT *root)
+{
+	if(root!=NULL)
+	{
+		postorder(root->left);
+		postorder(root->right);
+		printf("Code: %20d",root->code);
+		printf("Name: %20s",root->name);
+		printf("Price: %20d",root->price);
+		printf("Quantity: %20d",root->qty);
+		printf("Receive Date: %20d",root->rcv_date);
+		printf("Expiry Date: %20d",root->exp_date);
+		puts("");
+	}
+}
 void out_of_stock(PDT *root)
 {
-	puts("Out of stock (Quantity=0) products are: ")
+	puts("Out of stock (Quantity=0) products are: ");
 	if(root!=NULL)
 	{
 		inorder(root->left);
@@ -132,12 +177,31 @@ void out_of_stock(PDT *root)
 			printf("Name: %20s",root->name);
 			printf("Price: %20d",root->price);
 			printf("Receive Date: %20d",root->rcv_date);
-			printf("Receive Date: %20d",root->exp_date);
+			printf("Expiry Date: %20d",root->exp_date);
+			puts("");
 		}
 		inorder(root->right);
 	}
 }
 void in_stock(PDT *root)
+{
+	puts("In-stock products: ");
+	if(root!=NULL)
+	{
+		inorder(root->left);
+		if(root->qty!=0)
+		{
+			printf("Code: %20d",root->code);
+			printf("Name: %20s",root->name);
+			printf("Price: %20d",root->price);
+			printf("Quantity: %20d",root->qty);
+			printf("Receive Date: %20d",root->rcv_date);
+			printf("Expiry Date: %20d",root->exp_date);
+			puts("");
+		}
+		inorder(root->right);
+	}
+}
 int main()
 {
 	root=NULL;
@@ -149,7 +213,7 @@ int main()
 		puts("2. Update information");
 		puts("3. List products in ascending order (in-order)");
 		puts("4. List in Pre-order");
-		puts("5. List in Post-order")
+		puts("5. List in Post-order");
 		puts("6. Delete");
 		puts("7. List out-of-stock first");
 		puts("8. Exit");
@@ -177,16 +241,17 @@ int main()
 				break;
 			case 6:
 				puts("Enter unique code: ");
-				scanf("%d",del_code);
-				deletion(root,del_code);
+				scanf("%d",&existing_code);
+				deletion(root,existing_code);
 				break;
 			case 8:
 				exit(0);
 				break;
 			case 7:
 				out_of_stock(root);
-				in_stock(root)
+				in_stock(root);
 				break;
+			}
 		}while(choice<9);
-	}
+	return 0;
 }
