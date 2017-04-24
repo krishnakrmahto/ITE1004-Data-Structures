@@ -19,16 +19,17 @@ PDT *create_node()
 	nw=(PDT*)malloc(sizeof(PDT));
 	nw->left=NULL;
 	nw->right=NULL;
+	nw->name=(char*)malloc(sizeof(char*));
 	return nw;
 }
-PDT *insertion(PDT *root,int insert_code)
+PDT *insertion(PDT **root_add,int insert_code)
 {
-	PDT *parent;
+	PDT **parent_add;
 	create_node();//a node pointed by nw global variable is create
 	nw->code=insert_code;
 	puts("Enter name of the product: ");
 	scanf("%s",nw->name);
-	puts("Enter price of the product:");
+	puts("Enter price of the product (Rs):");
 	scanf("%d",&nw->price);
 	puts("Enter quantity: ");
 	scanf("%d",&nw->qty);
@@ -37,37 +38,31 @@ PDT *insertion(PDT *root,int insert_code)
 	puts("Enter expiry date- dd mm yyyy: ");
 	scanf("%d%d%d",&nw->exp_date.day,&nw->exp_date.month,&nw->exp_date.year);
 	if(root==NULL)
-	root=nw;
+	root=nw;//global root is assigned its value
 	else
 	{
-		for(parent=root;parent!=NULL;)
+		for(parent_add=root_add;*parent_add!=NULL;)
 		{
-			if(nw->code>parent->code)
+			if(nw->code>(*parent_add)->code)
 			{
-				if(parent->right==NULL)
+				if((*parent_add)->right==NULL)
 				{
-					parent->right=nw;
+					(*parent_add)->right=nw;
 					return;//or break the loop
 				}
-				parent=parent->right;
+				parent_add=&((*parent_add)->right);
 			}
-			else if(nw->code<parent->code)
+			else if(nw->code<(*parent_add)->code)
 			{
-				if(parent->left==NULL)
+				if((*parent_add)->left==NULL)
 				{
-					parent->left=nw;
+					(*parent_add)->left=nw;
 					return;
 				}
-				parent=parent->left;
+				parent_add=&((*parent_add)->left);
 			}
-			else
-			{
-				puts("Product already exists!");
-				return nw;
-			}
-		}	
+		}
 	}
-	return nw;	
 }
 PDT *find(PDT *root,int search_code)
 {
@@ -77,8 +72,8 @@ PDT *find(PDT *root,int search_code)
 	return(find(root->left,search_code));
 	if(search_code>root->code)
 	return(find(root->right,search_code));
-	
-	return root;//reaching this line means the searh item has been found.	
+
+	return root;//reaching this line means the searh item has been found.
 }
 void update(PDT *node)
 {
@@ -91,7 +86,7 @@ void update(PDT *node)
 	printf("Product code: %d\n",node->code);
 	puts("Choose your option: ");
 	puts("1. Update name");
-	puts("2. Update price");
+	puts("2. Update price (Rs)");
 	puts("3. Update quantity in stock");
 	puts("4. Update receiving date");
 	puts("5. Update expiry date");
@@ -125,12 +120,12 @@ void inorder(PDT *root)
 	if(root!=NULL)
 	{
 		inorder(root->left);
-		printf("Code: %20d",root->code);
-		printf("Name: %20s",root->name);
-		printf("Price: %20d",root->price);
-		printf("Quantity: %20d",root->qty);
-		printf("Receive Date: %20d",root->rcv_date);
-		printf("Expiry Date: %20d",root->exp_date);
+		printf("%-14s%-20d\n","Code: ",root->code);
+		printf("%-14s%-20s\n","Name: ",root->name);
+		printf("%-14s%-20d\n","Price(Rs): ",root->price);
+		printf("%-14s%-20d\n","Quantity: ",root->qty);
+		printf("%-14s%-2d-%d-%d\n","Receive Date: ",root->rcv_date.day,root->rcv_date.month,root->rcv_date.year);
+		printf("%-14s%-2d-%d-%d\n","Expiry Date: ",root->exp_date.day,root->exp_date.month,root->exp_date.year);
 		puts("");
 		inorder(root->right);
 	}
@@ -139,12 +134,12 @@ void preorder(PDT *root)
 {
 	if(root!=NULL)
 	{
-		printf("Code: %20d",root->code);
-		printf("Name: %20s",root->name);
-		printf("Price: %20d",root->price);
-		printf("Quantity: %20d",root->qty);
-		printf("Receive Date: %20d",root->rcv_date);
-		printf("Expiry Date: %20d",root->exp_date);
+		printf("%-14s%-20d\n","Code: ",root->code);
+		printf("%-14s%-20s\n","Name: ",root->name);
+		printf("%-14s%-20d\n","Price(Rs): ",root->price);
+		printf("%-14s%-20d\n","Quantity: ",root->qty);
+		printf("%-14s%-2d%d%d\n","Receive Date: ",root->rcv_date.day,root->rcv_date.month,root->rcv_date.year);
+		printf("%-14s%-2d-%d-%d\n","Expiry Date: ",root->exp_date.day,root->exp_date.month,root->exp_date.year);
 		puts("");
 		preorder(root->left);
 		preorder(root->right);
@@ -156,50 +151,93 @@ void postorder(PDT *root)
 	{
 		postorder(root->left);
 		postorder(root->right);
-		printf("Code: %20d",root->code);
-		printf("Name: %20s",root->name);
-		printf("Price: %20d",root->price);
-		printf("Quantity: %20d",root->qty);
-		printf("Receive Date: %20d",root->rcv_date);
-		printf("Expiry Date: %20d",root->exp_date);
+		printf("%-14s%-20d\n","Code: ",root->code);
+		printf("%-14s%-20s\n","Name: ",root->name);
+		printf("%-14s%-20d\n","Price(Rs): ",root->price);
+		printf("%-14s%-20d\n","Quantity: ",root->qty);
+		printf("%%-14s%-2d-%d-%d\n","Receive Date: ",root->rcv_date.day,root->rcv_date.month,root->rcv_date.year);
+		printf("%-14s%-2d-%d-%d\n","Expiry Date: ",root->exp_date.day,root->exp_date.month,root->exp_date.year);
 		puts("");
 	}
 }
 void out_of_stock(PDT *root)
 {
-	puts("Out of stock (Quantity=0) products are: ");
 	if(root!=NULL)
 	{
-		inorder(root->left);
+		out_of_stock(root->left);
 		if(root->qty==0)
 		{
-			printf("Code: %20d",root->code);
-			printf("Name: %20s",root->name);
-			printf("Price: %20d",root->price);
-			printf("Receive Date: %20d",root->rcv_date);
-			printf("Expiry Date: %20d",root->exp_date);
-			puts("");
+            printf("%-14s%-20d\n","Code: ",root->code);
+            printf("%-14s%-20s\n","Name: ",root->name);
+            printf("%-14s%-20d\n","Price(Rs): ",root->price);
+            printf("%-14s%-20d-%d-%d\n","Quantity: ",root->qty);
+            printf("%-14s%-2d-%d-%d\n","Receive Date: ",root->rcv_date.day,root->rcv_date.month,root->rcv_date.year);
+            printf("%-14s%-2d-%d-%d\n","Expiry Date: ",root->exp_date.day,root->exp_date.day,root->exp_date.year);
+            puts("");
 		}
-		inorder(root->right);
+		out_of_stock(root->right);
 	}
 }
 void in_stock(PDT *root)
 {
-	puts("In-stock products: ");
+	
 	if(root!=NULL)
 	{
-		inorder(root->left);
+		in_stock(root->left);
 		if(root->qty!=0)
 		{
-			printf("Code: %20d",root->code);
-			printf("Name: %20s",root->name);
-			printf("Price: %20d",root->price);
-			printf("Quantity: %20d",root->qty);
-			printf("Receive Date: %20d",root->rcv_date);
-			printf("Expiry Date: %20d",root->exp_date);
-			puts("");
+            printf("%-14s%-20d\n","Code: ",root->code);
+            printf("%-14s%-20s\n","Name: ",root->name);
+            printf("%-14s%-20d\n","Price(Rs): ",root->price);
+            printf("%-14s%-20d\n","Quantity: ",root->qty);
+            printf("%-14s%-2d-%d-%d\n","Receive Date: ",root->rcv_date.day,root->rcv_date.month,root->rcv_date.year);
+            printf("%-14s%-2d-%d-%d\n","Expiry Date: ",root->exp_date.day,root->exp_date.month,root->exp_date.year);
+            puts("");
 		}
-		inorder(root->right);
+		in_stock(root->right);
+	}
+}
+PDT *find_min(PDT* root)
+{
+	if(root->left==NULL)
+	return root;
+	find_min(root->left);
+}
+PDT *deletion(PDT **root_add,int del_item)
+{
+	if(del_item<(*root_add)->code)
+	(*root_add)->left=deletion(&((*root_add)->left),del_item);
+	else if(del_item>(*root_add)->code)
+	(*root_add)->right=deletion(&((*root_add)->right),del_item);
+	else//Reaching here means the del_item has been found in the tree
+	{
+		if((*root_add)->left==NULL&&(*root_add)->right==NULL)
+		{
+			*root_add=NULL;
+			return *root_add;
+		}
+		else if((*root_add)->left==NULL)
+		{
+			*root_add=(*root_add)->right;
+			return *root_add;
+		}
+		else if((*root_add)->right==NULL)
+		{
+			*root_add=(*root_add)->left;
+			return root;
+		}
+		else
+		{
+			PDT *temp=find_min((*root_add)->right);
+			(*root_add)->code=temp->code;
+			(*root_add)->exp_date=temp->exp_date;
+			(*root_add)->left=temp->left;
+			(*root_add)->name=temp->name;
+			(*root_add)->price=temp->price;
+			(*root_add)->qty=temp->qty;
+			(*root_add)->rcv_date=temp->rcv_date;
+			(*root_add)->right=deletion(&((*root_add)->right),temp->code);
+		}
 	}
 }
 int main()
@@ -209,6 +247,7 @@ int main()
 	int choice,new_code,existing_code;
 	do
 	{
+		puts("\nChoose your option");
 		puts("1. Insert a new product");
 		puts("2. Update information");
 		puts("3. List products in ascending order (in-order)");
@@ -223,7 +262,7 @@ int main()
 			case 1:
 				puts("Enter unique code for new product: ");
 				scanf("%d",&new_code);
-				insertion(root,new_code);
+				insertion(&root,new_code);
 				break;
 			case 2:
 				puts("Enter unique code of existing product:");
@@ -242,16 +281,20 @@ int main()
 			case 6:
 				puts("Enter unique code: ");
 				scanf("%d",&existing_code);
-				deletion(root,existing_code);
+				deletion(&root,existing_code);
+				puts("Deletion completed.");
 				break;
 			case 8:
 				exit(0);
 				break;
 			case 7:
+				puts("Out of stock (Quantity=0) products are: ");
 				out_of_stock(root);
+				puts("In-stock products: ");
 				in_stock(root);
 				break;
 			}
 		}while(choice<9);
 	return 0;
 }
+
