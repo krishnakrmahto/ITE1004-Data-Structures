@@ -170,7 +170,7 @@ void out_of_stock(PDT *root)
             printf("%-14s%-20d\n","Code: ",root->code);
             printf("%-14s%-20s\n","Name: ",root->name);
             printf("%-14s%-20d\n","Price(Rs): ",root->price);
-            printf("%-14s%-20d-%d-%d\n","Quantity: ",root->qty);
+            printf("%-14s%-20d\n","Quantity:",root->qty);
             printf("%-14s%-2d-%d-%d\n","Receive Date: ",root->rcv_date.day,root->rcv_date.month,root->rcv_date.year);
             printf("%-14s%-2d-%d-%d\n","Expiry Date: ",root->exp_date.day,root->exp_date.day,root->exp_date.year);
             puts("");
@@ -180,7 +180,7 @@ void out_of_stock(PDT *root)
 }
 void in_stock(PDT *root)
 {
-	
+
 	if(root!=NULL)
 	{
 		in_stock(root->left);
