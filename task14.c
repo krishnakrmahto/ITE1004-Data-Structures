@@ -236,6 +236,7 @@ PDT *deletion(PDT **root_add,int del_item)
 			(*root_add)->price=temp->price;
 			(*root_add)->qty=temp->qty;
 			(*root_add)->rcv_date=temp->rcv_date;
+			//instead of itna saara copying , I think (*root_add)=temp; would have done it in a single line!
 			(*root_add)->right=deletion(&((*root_add)->right),temp->code);
 		}
 	}
