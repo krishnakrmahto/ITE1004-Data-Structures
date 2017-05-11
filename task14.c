@@ -69,7 +69,7 @@ PDT *find(PDT *root,int search_code)
 	if(root==NULL)
 	return NULL;
 	if(search_code<root->code)
-	return(find(root->left,search_code));
+	return(find(root->left,search_code));//return in this statement ensures that if the search item is not found, then NULL is returned while backtracking takes place at the end of the recusion
 	if(search_code>root->code)
 	return(find(root->right,search_code));
 
